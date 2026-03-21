@@ -1,0 +1,15 @@
+{
+  "key_results": [
+    {"id": "G1-3", "metric": "overall_accuracy", "value": 0.487}
+  ],
+  "assumption_checks": [
+    {
+      "id": "G2A-1",
+      "model": "diagnostic_accuracy",
+      "check": "sample_size_sufficient",
+      "required": true,
+      "result": "",
+      "status": "skipped"
+    }
+  ]
+}
