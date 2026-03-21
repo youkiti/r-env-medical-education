@@ -5,6 +5,11 @@ description: Generates verification artifacts (back-translation, traceability, Q
 
 # Code Review Companion — Verification Artifact Skill
 
+## Scope
+
+- このスキルは verification artifact と verification file naming の正本。
+- 一般的なスクリプト命名は `reproducibility-standards`、単体テスト命名は `tdd-testthat` が担当する。
+
 AIがRスクリプトを出力する際、ヒトが検証するための **4つの検証アーティファクト** を段階的に生成する。
 
 > [!IMPORTANT]
@@ -223,3 +228,4 @@ Stage B で `verification_config.yml` と `qa_inputs.json` の `key_results` を
 |-------------|------|
 | `warn` | ❌ を記録。パイプライン完走 |
 | `error` | 全レポートを書き切った後に `stop()` |
+

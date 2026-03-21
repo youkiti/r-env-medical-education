@@ -1,124 +1,62 @@
 ---
 name: data-wrangling
-description: Guides data import, type conversion, missing data diagnosis, and cleaning for Gate 0B implementation.
+description: Implements Gate 0B data import, type checks, missingness diagnosis, and cleaning rules.
 ---
 
 # Data Wrangling (Gate 0B Implementation)
 
+## Scope
+
+- Primary deliverable: a cleaned analysis-ready dataset plus a cleaning log.
+- This skill implements approved cleaning rules.
+- It does not define privacy policy, project structure, or modeling strategy.
+
 ## 1. Data import
 
-- Confirm file types (CSV, Excel, RDS, etc.).
-- Handle encoding (UTF-8, Shift-JIS/CP932).
-- Confirm with the user before installing new packages.
-
-Package availability check:
-
-Before using packages, confirm availability:
-
-```r
-# First run scripts/verify_packages.R to check package availability.
-
-# Then use requireNamespace guards:
-if (requireNamespace("readr", quietly = TRUE)) {
-  df <- readr::read_csv("path/to/file.csv")
-} else {
-  df <- read.csv("path/to/file.csv", stringsAsFactors = FALSE)
-}
-
-if (requireNamespace("readxl", quietly = TRUE)) {
-  df <- readxl::read_excel("path/to/file.xlsx")
-} else {
-  message("readxl not available; use an alternative import method or confirm installation")
-}
-
-# For Shift-JIS/CP932 CSVs, use readr locale when available:
-# df <- readr::read_csv("path/to/file.csv", locale = readr::locale(encoding = "CP932"))
-```
+- Confirm file types such as CSV, Excel, and RDS.
+- Handle encoding issues, including UTF-8 and CP932/Shift-JIS.
+- Use package guards defined in `environment-setup`.
 
 ## 2. Type verification and conversion
 
-- Use `str()` and `summary()` to review types.
-- Convert as needed:
-  - character -> factor: `as.factor()` or `forcats::as_factor()` (if available)
-  - date parsing: `as.Date()` or `lubridate::ymd()` (if available)
-  - numeric conversion: `as.numeric()` after checking non-numeric strings
-- Guard optional packages with `requireNamespace()`.
+- Review types with `str()` and `summary()`.
+- Convert character, factor, date, and numeric fields as required by the plan.
+- Record conversions that affect interpretation or units.
 
-## 3. Sentinel value handling (user confirmation required)
+## 3. Sentinel value handling
 
 > [!CAUTION]
-> Converting sentinel values (e.g., 999, -1, "NA" strings) is a statistical decision.
-> Confirm with the data dictionary/codebook and the user before making changes.
+> Converting sentinel values is a statistical decision.
+> Confirm with the codebook and the user before applying changes.
 
-```r
-# Example after confirmation and documentation:
-# - 999 in age -> NA (confirmed as missing indicator)
-# - -1 in score -> NA (confirmed as not applicable)
-df$age[df$age == 999] <- NA
-df$score[df$score == -1] <- NA
-```
+- Document confirmed sentinel rules in the cleaning log.
+- Apply conversions only after confirmation.
 
 ## 4. Missing data diagnosis
 
-- Missingness rate: `colMeans(is.na(df))`
-
-Optional visualization (prefer ggplot2; use base R only if ggplot2 is unavailable):
-
-```r
-if (requireNamespace("naniar", quietly = TRUE)) {
-  naniar::vis_miss(df)
-} else {
-  missing_pct <- colMeans(is.na(df)) * 100
-  missing_df <- data.frame(
-    variable = names(missing_pct),
-    percent = as.numeric(missing_pct)
-  )
-  if (requireNamespace("ggplot2", quietly = TRUE)) {
-    ggplot2::ggplot(missing_df, ggplot2::aes(x = variable, y = percent)) +
-      ggplot2::geom_col() +
-      ggplot2::coord_flip() +
-      ggplot2::labs(title = "Missing Data by Variable", x = NULL, y = "Percent")
-  } else {
-    # Base R fallback
-    barplot(missing_pct, las = 2, main = "Missing Data by Variable")
-  }
-}
-
-if (requireNamespace("visdat", quietly = TRUE)) {
-  visdat::vis_dat(df)
-}
-```
+- Quantify missingness with `colMeans(is.na(df))` or equivalent.
+- Summarize missingness for key analysis variables.
+- Use optional visualizations when useful, but keep the missing-data rule itself aligned with the approved plan.
 
 ## 5. Data cleaning
 
-- Outlier detection: prefer ggplot2 boxplot; use base R boxplot if ggplot2 is unavailable; z-scores, IQR.
-- Range checks: logically impossible values (e.g., age < 0, BMI > 100).
-- Duplicate rows: `duplicated()`.
-- Confirm thresholds and rules with the user before applying changes.
+- Check logical ranges and impossible values.
+- Review duplicates and repeated rows.
+- Document outlier rules and whether they affect the main dataset or only sensitivity analyses.
 
 ## 6. Variable mapping documentation
 
-- Map `names()` to paper/codebook terms and document the mapping.
-- Confirm units (kg vs lb, cm vs m) and record conversions.
+- Map source column names to paper or SAP terms.
+- Record units and any required unit conversions.
+- Keep the mapping accessible to downstream scripts and reviewers.
 
 ## 7. Outputs and logging
 
-> [!IMPORTANT]
-> To protect privacy, store cleaned data in a gitignored directory.
+- Save the cleaning log with row counts, exclusions, sentinel handling, and type changes.
+- Store cleaned data only in locations allowed by `data-privacy-handling`.
+- Follow `reproducibility-standards` for script names and output naming.
 
-- Validate on synthetic/sample data before running on private data.
-- Cleaned data: save to `data/private/` (gitignored).
-- Logs/diagnostics: save under `scripts/<analysis_name>/output` with English text only.
+## Handoff
 
-```r
-private_dir <- "data/private"
-if (!dir.exists(private_dir)) dir.create(private_dir, recursive = TRUE)
-saveRDS(df_clean, file.path(private_dir, "cleaned_data.rds"))
-
-output_dir <- "scripts/<analysis_name>/output"
-if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
-writeLines(
-  c("Cleaning log", "Document rules, counts, and exclusions here."),
-  file.path(output_dir, "cleaning_log.txt")
-)
-```
+- Pass cleaned data and the cleaning log to Gate 1 and Gate 2 analyses.
+- If cleaning rules change the approved plan, return to `analysis-hitl-plan` Gate 0B.

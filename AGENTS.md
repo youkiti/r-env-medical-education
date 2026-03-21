@@ -13,6 +13,7 @@
 - `docs/`
 - `scripts/`
 - `data/`
+- `projects/`
 
 ## まず参照するドキュメント（優先順）
 
@@ -30,58 +31,91 @@
 
 ## Skills (Antigravity)
 
-### 解析の流れに沿ったスキルマップ
+このリポジトリでは、**13本のコアスキル**を `Core Workflow / Cross-cutting Controls / Method Skill` に分けて管理する。
+`delegate-to-codex` はコア分析スキルではなく、補助的な Utility として扱う。
 
-```
-① analysis-intake          情報収集（研究目的・デザイン・変数）
+### Core Workflow
+
+```text
+① analysis-intake          情報収集と未確定事項の整理
        ↓
-② sap-authoring            解析計画書（SAP）の作成 ★ NEW
+② sap-authoring            SAP 文書化
        ↓
 ③ analysis-hitl-plan       Gate ID 付き実装計画
        ↓
-④ data-wrangling           データ取得・クリーニング（Gate 0B）
+④ environment-setup        Gate 0A の実行環境確認
        ↓
-⑤ analysis-templates       既存テンプレート選択
+⑤ data-wrangling           Gate 0B の実装
        ↓
-⑥ analysis-guardrails      統計ガードレール適用
+⑥ analysis-implementation  projects/ 配下への実装展開
        ↓
-⑦ code-review-companion    検証アーティファクト生成
+⑦ code-review-companion    トレーサビリティと検証アーティファクト生成
 ```
 
-横断的に使うスキル: `output-and-naming-standards`, `tdd-testthat`, `causal-iptw-weightit`, `r-troubleshooting`, `data-privacy-handling`, `delegate-to-codex`
+### Cross-cutting Controls
+
+- `analysis-guardrails`
+- `reproducibility-standards`
+- `data-privacy-handling`
+- `tdd-testthat`
+- `r-troubleshooting`
+
+### Method Skill
+
+- `causal-iptw-weightit`
+
+### Utility
+
+- `delegate-to-codex`
 
 ### スキル一覧
 
-- `.agent/skills/analysis-intake/SKILL.md` - Collects study goals, design, variables, missingness, and reporting needs before starting clinical epidemiology analysis.
-- `.agent/skills/sap-authoring/SKILL.md` - Generates a reproducibility-focused Statistical Analysis Plan (SAP) document with BMJ Open code-review framework, Decision log, and traceability to Gate IDs.
-- `.agent/skills/data-wrangling/SKILL.md` - Guides data import, type conversion, missing data diagnosis, and cleaning for Gate 0B implementation.
-- `.agent/skills/analysis-hitl-plan/SKILL.md` - Defines the human-in-the-loop analysis plan with data dictionary mapping, variable definitions, model specs, and output agreements.
-- `.agent/skills/analysis-guardrails/SKILL.md` - Applies statistical guardrails, required checks, and non-negotiable prohibitions for clinical epidemiology analyses.
-- `.agent/skills/analysis-templates/SKILL.md` - Selects and reuses existing scripts and docs as templates for common analysis types (descriptive, survival, IPTW, time series).
-- `.agent/skills/output-and-naming-standards/SKILL.md` - Enforces output formats, file naming, workflow sequencing, coding style, and reproducibility conventions.
-- `.agent/skills/causal-iptw-weightit/SKILL.md` - Guides IPTW with WeightIt, balance diagnostics, and stability checks for causal inference in observational data.
-- `.agent/skills/r-troubleshooting/SKILL.md` - Triages R errors using reproducible steps, environment checks, and function disambiguation.
+#### Core Workflow
+
+- `.agent/skills/analysis-intake/SKILL.md` - Collects study goals, design, variables, missingness, reporting needs, and open decisions before planning starts.
+- `.agent/skills/sap-authoring/SKILL.md` - Converts confirmed intake information into a Statistical Analysis Plan (SAP) and review checklist.
+- `.agent/skills/analysis-hitl-plan/SKILL.md` - Converts an approved SAP into a Gate-based implementation plan with `G<gate>-<seq>` IDs.
+- `.agent/skills/environment-setup/SKILL.md` - Establishes the executable R environment, package availability, paths, and Windows-safe runtime conventions.
+- `.agent/skills/data-wrangling/SKILL.md` - Implements Gate 0B data import, type checks, missingness diagnosis, and cleaning rules.
+- `.agent/skills/analysis-implementation/SKILL.md` - Maps an approved Gate plan into `projects/<analysis_name>/` structure and numbered scripts.
+- `.agent/skills/code-review-companion/SKILL.md` - Generates verification artifacts (back-translation, traceability, QA report, verification report) for code review.
+
+#### Cross-cutting Controls
+
+- `.agent/skills/analysis-guardrails/SKILL.md` - Applies non-negotiable statistical rules and enforcement logic across analyses.
+- `.agent/skills/reproducibility-standards/SKILL.md` - Defines naming, output, style, and session-recording conventions for reproducibility.
 - `.agent/skills/data-privacy-handling/SKILL.md` - Handles sensitive data placement, git hygiene, and synthetic-data-first verification.
-- `.agent/skills/tdd-testthat/SKILL.md` - testthat を用いたカスタムR関数のテスト駆動開発（TDD）手順・フィクスチャ・臨床データのエッジケースパターン。
-- `.agent/skills/code-review-companion/SKILL.md` - Generates verification artifacts (back-translation, traceability, QA report, verification report) when outputting R scripts, enabling human review of AI-generated analysis code.
-- `.agent/skills/delegate-to-codex/SKILL.md` - Launches OpenAI Codex CLI with context from current session to delegate coding tasks.
+- `.agent/skills/tdd-testthat/SKILL.md` - Defines `testthat`-based TDD workflow, fixtures, and test file naming for custom R functions.
+- `.agent/skills/r-troubleshooting/SKILL.md` - Triages R errors with reproducible steps, environment checks, and function disambiguation.
 
-## SAP Workflow
+#### Method Skill
 
-解析計画書（SAP）を作成する際の流れ:
+- `.agent/skills/causal-iptw-weightit/SKILL.md` - Owns IPTW-specific estimand, weighting, balance, and stability guidance using `WeightIt`.
 
-1. **情報収集**: `analysis-intake` で研究目的・デザイン・変数等を確認
-2. **SAP 作成**: `sap-authoring` で BMJ Open 再現性フレームワークに基づく SAP を `{project}/docs/statistical_analysis_plan.md` に生成
-3. **Gate 計画**: SAP の解析項目に Gate ID を付与し `analysis-hitl-plan` に沿って `analysis_plan.md` を生成
-4. **実装 → 検証**: コード実装後、`code-review-companion` が SAP → コードのトレーサビリティを検証
+#### Utility
 
-参考: BMJ Open (PMC12496075) — 再現可能な解析コードの5提案
+- `.agent/skills/delegate-to-codex/SKILL.md` - Launches OpenAI Codex CLI with context from the current session to delegate coding tasks.
 
-## Verification Workflow
+## Workflow Notes
 
-Rスクリプトを `projects/` 配下に出力する際、`code-review-companion` スキルに従い検証アーティファクトを自動生成する。
+### Planning Workflow
+
+1. **情報収集**: `analysis-intake` で事実と未確定事項を収集する
+2. **SAP 文書化**: `sap-authoring` で `{project}/docs/statistical_analysis_plan.md` を作成する
+3. **Gate 化**: `analysis-hitl-plan` で `analysis_plan.md` に `G<gate>-<seq>` ID を付与する
+
+### Execution Workflow
+
+1. **環境確認**: `environment-setup` で Gate 0A を実施する
+2. **データ整備**: `data-wrangling` で Gate 0B を実装する
+3. **コード展開**: `analysis-implementation` で `projects/<analysis_name>/scripts/` に落とし込む
+4. **検証**: `code-review-companion` で SAP → Plan → Code のトレーサビリティを検証する
+
+### Verification Workflow
+
+Rスクリプトを `projects/` 配下に出力する際、`code-review-companion` スキルに従い検証アーティファクトを生成する。
 
 1. **Stage A（静的）**: スクリプト出力と同時に逆翻訳レポート・トレーサビリティ表を `output/verification/` に生成
-2. **Stage B（実行後）**: `run_all.R` が `qa_inputs.json` を書き出し、`99_verify_data.R` がQAレポート・検証レポートを生成
+2. **Stage B（実行後）**: `run_all.R` が `qa_inputs.json` を書き出し、`99_verify_data.R` が QA レポート・検証レポートを生成
 
 詳細は `.agent/skills/code-review-companion/SKILL.md` を参照。

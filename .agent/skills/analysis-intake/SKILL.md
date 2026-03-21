@@ -1,47 +1,47 @@
 ---
 name: analysis-intake
-description: Collects study goals, design, variables, missingness, and reporting needs before starting clinical epidemiology analysis.
+description: Collects study goals, design, variables, missingness, reporting needs, and open decisions before planning begins.
 ---
 
 # Analysis Intake
 
-## Study Design and Goals
+## Scope
 
-- Ask for the study goal and how results will be used (descriptive, prognostic, prediction, causal, exploratory).
-- Ask for study design and unit of analysis; confirm independence, clustering, or repeated measures.
+- Primary deliverable: `intake_summary.md` or an equivalent memo of confirmed facts and open questions.
+- This skill collects information only.
+- It does not write the SAP, assign Gate IDs, or prescribe code structure.
 
-## Outcome and Exposure
+## Study framing
 
-- Ask for outcome definition: type, timing, censoring rules, and event coding meaning.
-- Ask for exposure or intervention definition, start time, and whether it is time-varying.
+- Ask for the study goal and how the results will be used: descriptive, prognostic, prediction, causal, or exploratory.
+- Ask for the study design, unit of analysis, and whether clustering or repeated measures exist.
+- Ask whether the work is confirmatory or exploratory.
 
-## Variables and Coding
+## Outcome and exposure
 
-- Ask for adjustment candidates and the rationale for including or excluding variables.
-- Ask for variable coding details (0/1 meaning), units, and sentinel values (e.g., 999).
-- Ask about missingness amount, suspected mechanism, and exclusion criteria.
+- Ask for outcome definition, timing, censoring rules, and event coding.
+- Ask for exposure or intervention definition, index time, and whether it is time-varying.
 
-## Reporting Needs
+## Variables and coding
 
-- Ask for reporting needs: effect measure, 95% CI, and expected tables or figures (Table 1, regression tables, KM curves, balance plots).
+- Ask for adjustment candidates and the rationale for inclusion or exclusion.
+- Ask for coding details, units, legal ranges, and sentinel values.
+- Ask about missingness amount, suspected mechanism, and known exclusion rules.
+
+## Reporting needs
+
+- Ask for target estimands or effect measures and required confidence intervals.
+- Ask which tables and figures are expected: Table 1, regression tables, KM curves, balance plots, and similar outputs.
 - Ask for a data dictionary or codebook and the data file location.
 
-## Sensitivity and Exploratory Analysis
+## Additional planning inputs
 
-- Ask for sensitivity analysis approach:
-  - Outlier exclusion criteria (e.g., ±3SD)
-  - Alternative model specifications
-  - Complete case vs imputation comparison
-- Ask for exploratory analysis plans:
-  - Stratified analyses (e.g., by sex, age group)
-  - Interaction terms to explore
-  - Subgroup hypotheses (label as exploratory)
+- Ask for planned sensitivity analyses and exploratory analyses, but record them as requirements rather than deciding the final plan here.
+- Ask whether custom helper functions are expected; if yes, flag `tdd-testthat`.
+- Ask for privacy or governance constraints; if yes, flag `data-privacy-handling`.
+- Ask whether a causal estimand and propensity-score workflow are intended; if yes, flag `causal-iptw-weightit`.
 
-## Technical Requirements
+## Handoff
 
-- Ask for unit testing needs: will custom functions be created? If so, define test cases.
-
-> [!TIP]
-> テスト実装の詳細は `tdd-testthat` スキルを参照。
-
-- Ask for version control requirements: R version, key package versions to document.
+- Pass confirmed facts and unresolved questions to `sap-authoring`.
+- Keep unresolved items explicit; do not silently fill gaps.

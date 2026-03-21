@@ -5,6 +5,11 @@ description: Launches OpenAI Codex CLI with context from current Antigravity ses
 
 # Delegate to Codex
 
+## Scope
+
+- Utility skill for assisted ideation or debugging.
+- Not part of the 13-skill core clinical epidemiology workflow.
+
 Codex CLI をアイデア生成・デバッグ支援として活用。Codex がコード/解決策を提案し、Antigravity がファイル操作を実行。
 
 ## 使い方
@@ -28,3 +33,4 @@ Codex CLI をアイデア生成・デバッグ支援として活用。Codex が�
 2. Codex が解決策・コードを出力
 3. Antigravity が出力をパースしてファイル操作
 4. Antigravity が検証・結果報告
+

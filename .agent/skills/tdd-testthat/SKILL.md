@@ -5,6 +5,11 @@ description: testthat を用いたカスタムR関数のテスト駆動開発（
 
 # TDD with testthat
 
+## Scope
+
+- このスキルは `utils_*.R` の単体テスト設計とテストファイル命名の正本。
+- 一般的なスクリプト命名は `reproducibility-standards`、検証アーティファクトは `code-review-companion` が担当する。
+
 - TDDの核: 先に失敗するテストを書く → 最小実装で通す → 安全にリファクタする。
 - 対象: `utils_*.R` に切り出すカスタム関数（データクリーニング、計算ヘルパー、バリデーション等）。
 - 番号付きスクリプト（`01_*.R` 等）自体はテスト対象外。パイプラインの正しさは `code-review-companion` の検証アーティファクトで担保する。
@@ -123,7 +128,7 @@ testthat::test_dir(tests_dir, reporter = testthat::default_reporter())
 | フィクスチャ | `<name>.rds` | `tests/testthat/_fixtures/` |
 
 > [!NOTE]
-> `output-and-naming-standards` の `utils_<function>.R` 命名規約に準拠。
+> `reproducibility-standards` の `utils_<module>.R` 命名規約に準拠。
 
 ---
 
@@ -322,7 +327,7 @@ test_that("empty input: 0-row data.frame", {
 > [!CAUTION]
 > Windows + PowerShell 環境では日本語出力がCP932で壊れる可能性がある。
 > `expect_snapshot()` は**ロケール非依存な英語出力のみ**に使用する。
-> `output-and-naming-standards` の Windows encoding rules に従うこと。
+> Windows の文字化け対策は `environment-setup` の runtime conventions に従うこと。
 
 ```r
 test_that("summary table output is stable", {
@@ -367,15 +372,16 @@ if (requireNamespace("covr", quietly = TRUE)) {
 | 連携先スキル | 連携内容 |
 |------------|---------|
 | `analysis-guardrails` | カスタム関数のユニットテスト要件 → このスキルで実装 |
-| `analysis-hitl-plan` | Gate 0B でのテストケース定義 → このスキルで実装 |
+| `analysis-hitl-plan` | Gate 0B でテスト要否を計画し、このスキルで実装する |
 | `analysis-intake` | ユニットテスト要否の確認 → 「はい」ならこのスキルを適用 |
 | `code-review-companion` | `@plan_id` は呼び出し元スクリプトに付与。`utils_*.R` はテスト済み部品として信頼 |
-| `output-and-naming-standards` | `utils_<module>.R` 命名規約に準拠。テストファイル命名は `test-<module>.R` |
+| `reproducibility-standards` | `utils_<module>.R` 命名規約に準拠。一般的なスクリプト命名と整合させる |
 | `data-privacy-handling` | テストデータに実データを使わない。合成データを使用 |
-| `sap-authoring` | SAP §13 のユニットテスト計画と整合 |
+| `sap-authoring` | SAP の再現性セクションで定義したテスト方針と整合 |
 
 ## 注意事項
 
 - テストデータに実データを使わないこと（`data-privacy-handling` 参照）。
 - Windows パス問題は `here::here()` + `file.path()` で回避する。
 - `utils_*.R` が多数（目安5個超）になった場合、内部パッケージ化を検討する。
+
