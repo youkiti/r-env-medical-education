@@ -74,6 +74,8 @@ sink()
 - Report: `[NN]_generate_report.R` (e.g., `06_generate_report.R`).
 - Utilities: `utils_<function>.R` (e.g., `utils_helper_functions.R`).
 - Figure outputs: `<target>_<type>.png` and `<target>_<type>.pdf`.
+- Test files: `test-<module>.R` (e.g., `test-clean_data.R`), stored in `tests/testthat/`.
+- Test helpers: `helper-<name>.R` (e.g., `helper-test_data.R`).
 
 ## Code style and reproducibility
 

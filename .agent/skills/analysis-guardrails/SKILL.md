@@ -27,6 +27,9 @@ description: Applies statistical guardrails, required checks, and non-negotiable
 - Test edge cases: missing data, empty inputs, boundary values.
 - Document test results before using functions in main analysis.
 
+> [!TIP]
+> 詳細なTDD手順・テンプレートは `tdd-testthat` スキルを参照。
+
 ## Model assumption check enforcement
 
 - Model assumption checks are governed by Gate 2B agreement.

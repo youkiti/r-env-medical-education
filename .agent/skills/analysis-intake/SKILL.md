@@ -40,4 +40,8 @@ description: Collects study goals, design, variables, missingness, and reporting
 ## Technical Requirements
 
 - Ask for unit testing needs: will custom functions be created? If so, define test cases.
+
+> [!TIP]
+> テスト実装の詳細は `tdd-testthat` スキルを参照。
+
 - Ask for version control requirements: R version, key package versions to document.

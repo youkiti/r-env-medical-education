@@ -48,7 +48,7 @@
 ⑦ code-review-companion    検証アーティファクト生成
 ```
 
-横断的に使うスキル: `output-and-naming-standards`, `causal-iptw-weightit`, `r-troubleshooting`, `data-privacy-handling`, `delegate-to-codex`
+横断的に使うスキル: `output-and-naming-standards`, `tdd-testthat`, `causal-iptw-weightit`, `r-troubleshooting`, `data-privacy-handling`, `delegate-to-codex`
 
 ### スキル一覧
 
@@ -62,6 +62,7 @@
 - `.agent/skills/causal-iptw-weightit/SKILL.md` - Guides IPTW with WeightIt, balance diagnostics, and stability checks for causal inference in observational data.
 - `.agent/skills/r-troubleshooting/SKILL.md` - Triages R errors using reproducible steps, environment checks, and function disambiguation.
 - `.agent/skills/data-privacy-handling/SKILL.md` - Handles sensitive data placement, git hygiene, and synthetic-data-first verification.
+- `.agent/skills/tdd-testthat/SKILL.md` - testthat を用いたカスタムR関数のテスト駆動開発（TDD）手順・フィクスチャ・臨床データのエッジケースパターン。
 - `.agent/skills/code-review-companion/SKILL.md` - Generates verification artifacts (back-translation, traceability, QA report, verification report) when outputting R scripts, enabling human review of AI-generated analysis code.
 - `.agent/skills/delegate-to-codex/SKILL.md` - Launches OpenAI Codex CLI with context from current session to delegate coding tasks.
 

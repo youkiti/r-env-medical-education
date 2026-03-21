@@ -45,6 +45,7 @@ Phase 2: Data Analyses
 - If custom functions are needed:
   - Define unit test cases (edge cases, missing data, boundary values).
   - Test functions before use in main analysis.
+  - テスト実装は `tdd-testthat` スキルに従う。
 
 ---
 
