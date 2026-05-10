@@ -87,10 +87,14 @@ medical_education_admissions/
 |------------|------|---------------|
 | `rmarkdown` | Rmd → HTML への knit | ◯ |
 | `knitr` | code chunk 実行 | ◯ |
-| `gtsummary` | Table 1 出力 | ◯ |
+| `gtsummary` | Table 1 / 回帰表 (`tbl_regression`) | ◯ |
 | `dplyr` | データ操作 | ◯ (tidyverse 経由) |
-| `broom` | `lm` の整形 | ◯ (tidyverse 経由) |
+| `broom` | `lm` の整形 (`tbl_regression` の内部でも利用) | ◯ (tidyverse 経由) |
 | `ggplot2` | ヒストグラム等 | ◯ (tidyverse 経由) |
+
+> ⚠️ **AI が `epitools` `epiR` `gmodels` 等の新規パッケージを提案してきても断る。**
+> リスク比・オッズ比は **base R + 上記 6 パッケージ** で完結させる (式は §Task 2 に明記)。
+> 依存を増やすと WS 当日の `install.packages` で詰まるリスクがある。
 
 ### 事前課題（受講生用、当日までに済ませる）
 
@@ -171,13 +175,30 @@ source("projects/medical_education_admissions/check_environment.R")
 
 - **t検定**: 一般入試 vs それ以外 で `gpa` に差があるか
   - ヒント: `admission_route` を 2値 (`General` vs それ以外) に変換するところから
-- **$\chi^2$検定**: 入学経路（2値）と `cbse_repeat` の関連
-  - ヒント: `chisq.test(table(...))`
+- **$\chi^2$検定 + リスク比 (RR) と 95%CI**: 入学経路（2値）と `cbse_repeat` の関連
+  - p 値: `chisq.test(table(...))`
+  - RR + 95%CI は **base R で計算** (epitools 等は使わない)。次の関数を AI に書いてもらえば OK:
+
+  ```r
+  rr_ci <- function(a, n1, b, n2) {
+    # a: 群1 のイベント数, n1: 群1 の人数, b: 群2 のイベント数, n2: 群2 の人数
+    rr <- (a / n1) / (b / n2)
+    se_log_rr <- sqrt(1/a - 1/n1 + 1/b - 1/n2)
+    ci <- exp(log(rr) + c(-1.96, 1.96) * se_log_rr)
+    c(RR = rr, lower = ci[1], upper = ci[2])
+  }
+  # 使い方:
+  # tab <- table(d$admission_route_binary, d$cbse_repeat)
+  # rr_ci(a = tab["General","1"], n1 = sum(tab["General",]),
+  #       b = tab["Other",  "1"], n2 = sum(tab["Other",  ]))
+  ```
 
 ### Task 3: 多変量解析
 
 - **重回帰**: `gpa` を、`admission_route_binary + age + sex + entry_score` で説明する
-  - ヒント: `lm()` の出力を `broom::tidy(conf.int = TRUE)` で整形すると論文向けの表になる
+  - モデル: `fit <- lm(gpa ~ admission_route_binary + age + sex + entry_score, data = d)`
+  - 整形は **`gtsummary::tbl_regression(fit)`** に統一 (係数・95%CI・p 値の表が一発で出る)
+  - 内部で `broom::tidy()` を呼んでいるので、broom を直接叩いても同じ数字になる
 
 ### Task 4: knit して HTML レポートにする
 
@@ -200,7 +221,8 @@ source("projects/medical_education_admissions/check_environment.R")
 ```
 重回帰 lm(gpa ~ admission_route_binary + age + sex + entry_score) の出力を、
 論文の Table 2 のように 95%CI と p値を含む整った表にしたいです。
-broom::tidy を使った chunk を書いてください。
+gtsummary::tbl_regression() を使った chunk を書いてください
+(broom などの追加パッケージは不要です)。
 ```
 
 ```
