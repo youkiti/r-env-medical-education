@@ -7,11 +7,11 @@ Day 1 の `medical_education_admissions/` は **後ろ向きコホート + 重�
 
 ## 想定 RQ
 
-> **2022 年度の新カリキュラム導入により、TUMS 医学生の CBSE 一発合格率と GPA はどう変化したか?**
+> **2022 年度の新カリキュラム導入により、MMEd 医学生の CBSE 一発合格率と GPA はどう変化したか?**
 
 | 要素 | 内容 |
 |------|------|
-| **P** | TUMS 医学部 入学コホート (2017〜2026 年度入学、各 n≈150) |
+| **P** | MMEd 医学部 入学コホート (2017〜2026 年度入学、各 n≈150) |
 | **E** | 2022 年度入学コホートからの新カリキュラム (症例ベース学習＋臨床推論枠倍増) |
 | **C** | 2022 年度より前の旧カリキュラム / 並行して未導入の他大学 (DID 用) |
 | **O** | ① CBSE 一発合格率 (2値、年度集計) ② GPA (連続、年度集計) |
@@ -21,7 +21,7 @@ Day 1 の `medical_education_admissions/` は **後ろ向きコホート + 重�
 
 > Behnam et al. **Admission Routes and Demographics as Predictors of Academic Performance in Medical Students.** *Advances in Medical Education and Practice (AMEP)*, 2026. DOI: 10.2147/AMEP.S574930.
 
-Day 1 と同じ TUMS の医学教育コホートを背景にしつつ、**入学経路** ではなく **カリキュラム改革** を介入として再構成。
+Day 1 と同じ MMEd の医学教育コホートを背景にしつつ、**入学経路** ではなく **カリキュラム改革** を介入として再構成。
 
 `set.seed(20260514)` で生成された **仮想 IR パネルデータ** であり、実データではない。
 
@@ -33,8 +33,8 @@ Day 1 と同じ TUMS の医学教育コホートを背景にしつつ、**入学
 └────────  介入前 5 年  ────────┘└────────  介入後 5 年  ────────┘
 ```
 
-- 介入前 5 年: TUMS と University B の `mean_gpa` は **緩く平行** (= DID の前提)
-- 2022 年に TUMS の `mean_gpa` は **+0.5 水準ジャンプ** + 緩い post-trend
+- 介入前 5 年: MMEd と University B の `mean_gpa` は **緩く平行** (= DID の前提)
+- 2022 年に MMEd の `mean_gpa` は **+0.5 水準ジャンプ** + 緩い post-trend
 - `cbse_pass_rate` は +0.05 (5 percentage points) ジャンプ + 緩い post-trend
 - University B には介入なし
 
@@ -48,8 +48,8 @@ medical_education_panel/
 │   ├── raw/
 │   │   └── generate_panel_data.R   # 2 つの CSV を再現生成するスクリプト
 │   └── processed/
-│       ├── tums_panel.csv          # TUMS 単独 10 年パネル (ITS 用)
-│       └── multi_school_panel.csv  # TUMS + UniB 2 校 × 10 年 (DID 用)
+│       ├── mmed_panel.csv          # MMEd 単独 10 年パネル (ITS 用)
+│       └── multi_school_panel.csv  # MMEd + UniB 2 校 × 10 年 (DID 用)
 ├── scripts/                        # 受講生の作業ファイル置き場 (空)
 └── output/
     ├── figures/                    # 受講生が作る図 (空)
@@ -60,7 +60,7 @@ medical_education_panel/
 
 ## 変数辞書
 
-### `tums_panel.csv` — ITS 用 (10 行)
+### `mmed_panel.csv` — ITS 用 (10 行)
 
 | 変数 | 型 | 内容 |
 |------|----|------|
@@ -77,12 +77,12 @@ medical_education_panel/
 | 変数 | 型 | 内容 |
 |------|----|------|
 | `year` | int | 入学年度 (2017〜2026) |
-| `school` | カテゴリ | `TUMS` (介入校) / `UniB` (対照校) |
+| `school` | カテゴリ | `MMEd` (介入校) / `UniB` (対照校) |
 | `cohort_size` | int | その年度の入学コホート人数 |
 | `mean_gpa` | 連続 | 卒業時 GPA の年度平均 |
 | `cbse_pass_rate` | 連続 (0–1) | CBSE 一発合格率 |
 | `period` | カテゴリ | `pre` (2021 以前) / `post` (2022 以降) |
-| `treated` | 2値 | TUMS = 1 / UniB = 0 |
+| `treated` | 2値 | MMEd = 1 / UniB = 0 |
 
 ## ワークショップ課題 (受講生用)
 
@@ -90,19 +90,19 @@ Day 1 のフォーク済みリポジトリ上で、**空の `analysis_panel.Rmd`
 
 ### Task 1: パネル CSV を読み込み + 折れ線プロット
 
-- `tums_panel.csv` と `multi_school_panel.csv` を `read.csv` で読み込み
+- `mmed_panel.csv` と `multi_school_panel.csv` を `read.csv` で読み込み
 - `ggplot2` で `year` × `mean_gpa` / `cbse_pass_rate` の折れ線
 - **2022 年に介入の縦線** (`geom_vline(xintercept = 2022, linetype = "dashed")`) を入れる
 - `multi_school_panel` のほうは `school` で色分け (`color = school`)
 
 ### Task 2: ITS — segmented regression
 
-`tums_panel.csv` を使って:
+`mmed_panel.csv` を使って:
 
 ```r
 fit_its_gpa <- lm(
   mean_gpa ~ time + intervention + time_after_intervention,
-  data = tums_panel
+  data = mmed_panel
 )
 gtsummary::tbl_regression(fit_its_gpa)
 ```
@@ -120,7 +120,7 @@ gtsummary::tbl_regression(fit_its_gpa)
 `multi_school_panel.csv` を使って:
 
 ```r
-multi$school <- factor(multi$school, levels = c("UniB", "TUMS"))
+multi$school <- factor(multi$school, levels = c("UniB", "MMEd"))
 multi$period <- factor(multi$period, levels = c("pre",  "post"))
 
 fit_did_gpa <- lm(
@@ -130,8 +130,8 @@ fit_did_gpa <- lm(
 gtsummary::tbl_regression(fit_did_gpa)
 ```
 
-`school:period` (= `schoolTUMS:periodpost`) の係数が **DID 推定値**。
-**時間経過のトレンドを除いた、TUMS 新カリキュラムの追加効果**。
+`school:period` (= `schoolMMEd:periodpost`) の係数が **DID 推定値**。
+**時間経過のトレンドを除いた、MMEd 新カリキュラムの追加効果**。
 
 ### Task 4: knit して HTML レポート
 
@@ -143,7 +143,7 @@ gtsummary::tbl_regression(fit_did_gpa)
 
 `set.seed(20260514)` で生成したデータの場合 (`Rscript data/raw/generate_panel_data.R` 末尾参照):
 
-### ITS (TUMS, mean_gpa)
+### ITS (MMEd, mean_gpa)
 
 | 項 | 推定値 | 解釈 |
 |---|---|---|
@@ -157,22 +157,22 @@ gtsummary::tbl_regression(fit_did_gpa)
 | 項 | 推定値 | 解釈 |
 |---|---|---|
 | `(Intercept)` | 16.26 | UniB pre の baseline |
-| `schoolTUMS` | +0.138 | 校間の固定差 (TUMS が +0.14 高い) |
+| `schoolMMEd` | +0.138 | 校間の固定差 (MMEd が +0.14 高い) |
 | `periodpost` | +0.068 | 全体の時代固定差 |
-| **`schoolTUMS:periodpost`** | **+0.572** | **DID 推定値 — TUMS の追加効果 +0.57** |
+| **`schoolMMEd:periodpost`** | **+0.572** | **DID 推定値 — MMEd の追加効果 +0.57** |
 
 > 受講生にはこの「期待される結果」は当日まで見せない。AI の出力と一致するかを最後に答え合わせする。
 
 ## AI に聞くときの雛形
 
 ```
-このリポジトリの projects/medical_education_panel/data/processed/tums_panel.csv を
+このリポジトリの projects/medical_education_panel/data/processed/mmed_panel.csv を
 読み込んで、year × mean_gpa の折れ線プロットを ggplot2 で描いてください。
 2022 年の縦線を点線で重ねてください。R 初心者なので各行にコメントを付けてください。
 ```
 
 ```
-tums_panel に対して、segmented regression of interrupted time series
+mmed_panel に対して、segmented regression of interrupted time series
 (Wagner et al. 2002) を lm() で当てはめたいです。
 モデル: mean_gpa ~ time + intervention + time_after_intervention
 gtsummary::tbl_regression() で 95%CI と p 値を含む整形表を出してください。
@@ -182,7 +182,7 @@ gtsummary::tbl_regression() で 95%CI と p 値を含む整形表を出してく
 multi_school_panel に対して difference-in-differences モデルを lm() で
 当てはめたいです。
 モデル: mean_gpa ~ school + period + school:period
-school は (UniB, TUMS)、period は (pre, post) の順で factor 化してください。
+school は (UniB, MMEd)、period は (pre, post) の順で factor 化してください。
 gtsummary::tbl_regression() で交互作用項の係数 = DID 推定値が
 読み取りやすい表にしてください。
 ```
@@ -219,7 +219,7 @@ source("projects/medical_education_panel/check_environment.R")
 
 | 症状 | 原因 | 対処 |
 |------|------|------|
-| `cannot find file 'data/processed/tums_panel.csv'` | knit 時の作業ディレクトリ | `analysis_panel.Rmd` は `projects/medical_education_panel/` 直下に置く。または `here::here(...)` を使う |
+| `cannot find file 'data/processed/mmed_panel.csv'` | knit 時の作業ディレクトリ | `analysis_panel.Rmd` は `projects/medical_education_panel/` 直下に置く。または `here::here(...)` を使う |
 | DID で `period` のカテゴリ順が逆になり係数の符号が反転 | factor levels 未指定 | `factor(period, levels = c("pre", "post"))` を明示 |
 | ITS で `time_after_intervention` が定義されていない | データ生成のみで提供 | 元 CSV にすでに列がある (再計算不要) |
 | `tbl_regression` で日本語ラベル | 任意 | `label = list(intervention ~ "介入後", ...)` で変えられる |
@@ -238,7 +238,7 @@ Day 1 のお経表に **「時系列パネル」列** が増えたイメージ�
 
 ```r
 source("projects/medical_education_panel/data/raw/generate_panel_data.R")
-# data/processed/tums_panel.csv, multi_school_panel.csv が上書きされる
+# data/processed/mmed_panel.csv, multi_school_panel.csv が上書きされる
 ```
 
 `set.seed(20260514)` 固定なので、何度実行しても同じ CSV が得られる。

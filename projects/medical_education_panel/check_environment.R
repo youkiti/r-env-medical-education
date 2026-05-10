@@ -34,7 +34,7 @@ cat("\n--- 2. Data files ---\n")
 panel_dir <- file.path("projects", "medical_education_panel", "data", "processed")
 files_to_check <- list(
   list(
-    path = file.path(panel_dir, "tums_panel.csv"),
+    path = file.path(panel_dir, "mmed_panel.csv"),
     expected_cols = c("year", "cohort_size", "mean_gpa", "cbse_pass_rate",
                       "intervention", "time", "time_after_intervention"),
     expected_n = 10
