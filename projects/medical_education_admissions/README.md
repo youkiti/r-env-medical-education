@@ -170,6 +170,16 @@ source("projects/medical_education_admissions/check_environment.R")
 
 - `data/processed/sample.csv` を読み込み、各変数のヒストグラム or 頻度集計を出す
 - `gtsummary::tbl_summary(by = admission_route)` で入学経路別 Table 1 を作る
+- **連続変数は `mean (SD)` で表記する**。`±` 記号は使わない (AMA / BMJ スタイル準拠、SD と SEM と 95%CI が `±` だと区別できなくなるため)
+  - `gtsummary` のデフォルトは `median (IQR)` なので、明示的に指定する:
+
+  ```r
+  tbl_summary(
+    by = admission_route,
+    statistic = list(all_continuous() ~ "{mean} ({sd})"),
+    digits    = list(all_continuous() ~ 1)
+  )
+  ```
 
 ### Task 2: 単変量解析
 
@@ -210,7 +220,9 @@ source("projects/medical_education_admissions/check_environment.R")
 ```
 このリポジトリの projects/medical_education_admissions/data/processed/sample.csv を
 読み込んで、変数 admission_route 別の Table 1 を gtsummary で作る Rmd チャンクを
-書いてください。私は R 初心者なので、各行に何をしているかコメントを付けてください。
+書いてください。連続変数は mean (SD) で出してください
+(statistic = list(all_continuous() ~ "{mean} ({sd})") を使い、± 記号は避けてください)。
+私は R 初心者なので、各行に何をしているかコメントを付けてください。
 ```
 
 ```
@@ -234,7 +246,7 @@ knit したら次のエラーが出ました。直してください。
 
 | アウトカム変数 | 2値 | 連続 | 生存時間 |
 |----------------|-----|------|----------|
-| 分布の記述 | 頻度集計・分割表 | ヒストグラム、平均±SD | Kaplan-Meier法 |
+| 分布の記述 | 頻度集計・分割表 | ヒストグラム、平均 (SD) | Kaplan-Meier法 |
 | 単変量解析 | $\chi^2$検定（or Fisher）／リスク比 | t検定／平均差 | Log-rank／率比 |
 | 多変量解析 | ロジスティック回帰 | **重回帰** | Cox回帰 |
 
