@@ -11,10 +11,14 @@ Warning: 'lib = "/usr/local/lib/R/site-library"' is not writable
 ```
 
 **解決策**:
-- `sudo` 権限でRを実行する
-- ユーザーのホームディレクトリにパッケージをインストールする
+- ユーザー専用ライブラリにインストールする（Windows / Mac どちらでも動作）
   ```r
-  install.packages("パッケージ名", lib = "~/R/library")
+  install.packages("パッケージ名", lib = Sys.getenv("R_LIBS_USER"))
+  ```
+  `Sys.getenv("R_LIBS_USER")` は OS ごとに適切なパスを返します（Windows: `AppData/Local/R/win-library/…`、Mac: `~/Library/R/…`）。空のときは以下で確認・作成できます:
+  ```r
+  path <- Sys.getenv("R_LIBS_USER")
+  if (!dir.exists(path)) dir.create(path, recursive = TRUE)
   ```
 
 ### 依存関係の問題

@@ -1,5 +1,8 @@
 # AIアシスタント向けガイド（臨床疫学R環境）
 
+> [!NOTE]
+> このファイルは AI 向けの設定ファイルです。人間の利用者は [README.md](README.md) をご覧ください。
+
 このリポジトリは、臨床疫学研究でよく使う統計解析をRで再現可能に実行するための環境と例を提供します。
 このファイルは概要とスキルへの導線のみを記載します。詳細な手順・ガードレールは `.agent/skills/` を参照してください。
 
@@ -95,6 +98,26 @@
 #### Utility
 
 - `.agent/skills/delegate-to-codex/SKILL.md` - Launches OpenAI Codex CLI with context from the current session to delegate coding tasks.
+
+## スキル早引き表（初学者向け）
+
+「どんな言葉で話しかけるとどのスキルが動くか」の対照表です。
+
+| 話しかけ方の例 | 呼び出されるスキル |
+|---|---|
+| 「研究の目的は〜、デザインは〜」「変数を整理したい」 | `analysis-intake` |
+| 「SAP を作りたい」「解析計画を文書化して」 | `sap-authoring` |
+| 「実装計画を立てて」「Gate に分けて」 | `analysis-hitl-plan` |
+| 「R環境を確認して」「パッケージが入っているか調べて」 | `environment-setup` |
+| 「データを読み込んで」「欠損を確認して」「型を整えて」 | `data-wrangling` |
+| 「Table 1 を作って」「回帰を実装して」「解析スクリプトを書いて」 | `analysis-implementation` |
+| 「コードをレビューして」「SAP との整合を確認して」 | `code-review-companion` |
+| 「エラーが出た」「パッケージが読み込めない」 | `r-troubleshooting` |
+| 「因果関係を言いたい」「〜が〜を引き起こす、と書いていい？」 | `analysis-guardrails`（自動介入） |
+| 「IPTWを使いたい」「重み付けの診断をして」 | `causal-iptw-weightit` |
+| 「再現可能にしたい」「`renv` を使いたい」 | `reproducibility-standards` |
+| 「患者データを扱う」「個人情報が含まれている」 | `data-privacy-handling` |
+| 「テストを書きたい」「関数の動作を自動確認したい」 | `tdd-testthat` |
 
 ## Workflow Notes
 

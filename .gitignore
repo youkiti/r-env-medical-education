@@ -14,3 +14,6 @@ wget-log*
 data/private/
 data/raw_private/
 
+# Personal notes / assignment tracking (not shared)
+todo.md
+
