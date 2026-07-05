@@ -22,6 +22,7 @@ description: Implements Gate 0B data import, type checks, missingness diagnosis,
 - Review types with `str()` and `summary()`.
 - Convert character, factor, date, and numeric fields as required by the plan.
 - Record conversions that affect interpretation or units.
+- Verify event/status variables with `table()` (for example `table(df$status)`) and reconcile the observed categories against the paper's reported counts before modeling. Never infer event coding from column names; skipping this step can produce entirely wrong survival/outcome results and waste debugging time.
 
 ## 3. Sentinel value handling
 

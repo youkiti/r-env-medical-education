@@ -31,6 +31,30 @@ description: Applies non-negotiable statistical rules and enforcement logic acro
 - State limitations when diagnostics are unavailable or optional packages are missing.
 - Escalate unresolved statistical decisions back to the user instead of freezing them silently.
 
+## Decisions requiring user confirmation
+
+These can change results substantially. Present options with trade-offs and confirm before proceeding.
+
+- Study-purpose classification (causal inference, descriptive association, or prediction).
+- Distinction between primary/secondary outcomes and primary/sensitivity analyses (multiplicity handling).
+- Missing-data handling (complete-case, multiple imputation, or another method); route to `missing-data-mi`.
+- Handling of continuous variables (do not dichotomize by default; whether to allow non-linearity).
+- Handling of clustering / repeated measures (mixed effects, robust SE, etc.).
+- Variable selection (do not select on p-values alone; base it on prior knowledge).
+- Causal wording in observational studies (avoid causal language; state assumptions).
+- Propensity-score estimand (ATE/ATT) and trimming rules; route to `causal-iptw-weightit`.
+
+## Safe defaults when unspecified
+
+Low-risk steps that may proceed when the user has not specified otherwise.
+
+- Start with overall/group-wise descriptive statistics via `tbl_summary()` (mean (SD), n (%), etc.).
+- Center reporting on estimates with 95% CI; do not conclude from p-values alone (see `principles/compiled_principles.md`).
+- Report exact p-values (for example `P = 0.043`), not `P < 0.05`.
+- Set `set.seed(123)` whenever randomness is involved (sampling, splitting, imputation, etc.).
+- For heavy or long analyses, verify behavior on a small sample before the full run.
+- For large data, watch memory usage and start from column selection or aggregation (see `docs/summary.md`).
+
 ## Handoff
 
 - Use method skills for model-specific check procedures.

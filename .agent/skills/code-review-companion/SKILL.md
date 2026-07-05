@@ -91,13 +91,16 @@ source(file.path(project_root, "scripts", "99_verify_data.R"))
 
 `{project}` = `projects/<analysis_name>/`。全パスは `{project}/` 基準。
 
+> [!NOTE]
+> **Rmd モード**（`analysis-implementation` の Lightweight Rmd mode）の場合、トレーサビリティ表の「Script」列はチャンクラベル、「Line Range」は `analysis.Rmd` 内の行範囲を指す。Stage B（`qa_inputs.json` の書き出し）は Rmd の最終チャンクで行ってよい。
+
 ### プロジェクトルート解決
 
 `_project_config.R` をスクリプトフォルダに配置する。パス定義のみ、副作用なし。
 
 ```r
 # scripts/_project_config.R （パス定義のみ、パッケージ読込・インストールなし）
-project_root <- here::here("projects", "chatgpt_diagnostic_study")
+project_root <- here::here("projects", "<analysis_name>")
 output_dir   <- file.path(project_root, "output")
 verify_dir   <- file.path(output_dir, "verification")
 ```

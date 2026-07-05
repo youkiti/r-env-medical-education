@@ -34,85 +34,20 @@
 
 ## Skills (Antigravity)
 
-このリポジトリでは、**13本のコアスキル**を `Core Workflow / Cross-cutting Controls / Method Skill` に分けて管理する。
+このリポジトリでは、**16本のコアスキル**を `Core Workflow / Cross-cutting Controls / Method Skill` に分けて管理する。
 `delegate-to-codex` はコア分析スキルではなく、補助的な Utility として扱う。
+
+各スキルは「Scope（正本として所有するもの）/ やらないこと / Required・Recommended checks / Handoff」を明示する型で書かれている。手順・チェックリストの本文は各スキルが正本であり、このファイルにはポインタのみを置く。
 
 ### Core Workflow
 
-- アウトカム（型：連続/二値/カウント/時間-to-イベント、測定タイミング、検閲の定義）
-- 曝露/介入（群の定義、開始時点、時間依存の有無）
-- 調整候補（交絡・共変量、事前に入れる変数の考え方）
-- 変数のコード（0/1の意味、単位、異常値コード（例：999））
-
-**欠測と除外**
-
-- 欠測の量、欠測が起きる理由の見当、除外基準（完全ケース分析は原則推奨されにくいので要相談）
-
-**報告形式**
-
-- 効果指標（差/OR/RR/HR など）と、必ず95%CIも出すか
-- 図表の希望（Table1、回帰表、KM曲線、バランスプロット等）
-
-> [!TIP]
-
-> ユーザーが迷っている場合は、まず「記述統計＋欠測要約＋簡単な可視化」までを先に作り、次にモデル化へ進める。
-
-### 2) 実データを触る前の最低限チェック（勝手に省略しない）
-
--`n`（行数）と主要イベント数（アウトカムが二値/生存なら特に）
-
-- 変数の型（数値/因子/日付）と単位
-- 欠測のパターン（列ごとの欠測率、主要変数の欠測）
-- あり得ない値（年齢<0、BMI極端、999等のコード）
-- **イベント変数のカテゴリ（0/1/2/...の意味）を`table()`で確認**し、論文記載と対応づける
-
-> [!CAUTION]
->
-> **変数のコーディングを「推定」してコードを書かない**。イベント変数（status、event等）は必ず`table(df$status)`等で実際のカテゴリを確認し、論文記載の件数と照合してからコードに落とす。この手順を省略すると、生存解析等で全く異なる結果が出て、デバッグに時間を浪費する。
-
-### 3) 必ずユーザー確認が必要な判断（例）
-
-以下は結果が大きく変わり得るため、**選択肢を提示して確認**してください。
-
-- 研究目的の分類（因果推論か、関連の記述か、予測か）
-- 主要アウトカム/副次アウトカム、主要解析/感度解析の区別（多重比較の扱い）
-- 欠測の扱い（完全ケースで進めるか、多重代入か、別法か）
-- 連続変数の扱い（原則二値化しない；非線形を許すか等）
-- クラスタリング/繰り返し測定の扱い（混合効果/ロバストSE等）
-- 変数選択（p値だけで選ばない；原則は事前知識）
-- 観察研究での因果効果の言い方（因果語を避ける/前提を明記）
-- 傾向スコア法の推定対象（ATE/ATT）と、トリミング等のルール
-
-### 4) デフォルトで進めてよい低リスク手順（ユーザーが未指定のとき）
-
-- まずは `tbl_summary()` で全体/群別の記述統計（平均±SDやn(%)など）を作る
-- 推定値＋95%CIを中心に整理し、p値だけの結論にしない（`principles/compiled_principles.md`参照）
-- p値を示す場合は「P < 0.05」ではなく実値（例：`P = 0.043`）を使う
-- 乱数を使う処理（サンプリング、分割、代入等）がある場合は `set.seed(123)` を明示
-- 解析が重い/長い場合は、先に小さなサンプルで動作確認してから本番に進む
-- 大規模データはメモリ使用量に注意し、列選択や集計から始める（`docs/summary.md`参照）
-
-### 5) トラブルシューティング：最初の3手
-
-- 実行コマンドとエラーメッセージ全文を確認（省略しない）
-
--`sessionInfo()`、`packageVersion()`、データの `str()`/`names()` で状況を切り分け
-
-- 関数の衝突が疑わしい場合は `pkg::fun()` で明示（詳細は `docs/troubleshooting.md`）
-
-## 因果推論（傾向スコア/IPTW）を扱うときの追加ガードレール
-
-- このリポジトリでは `iptw` の代替として `WeightIt` を使用（`docs/iptw_note.md`）。
-
--**極端な傾向スコア（0/1付近）や極端な重み**が出る場合は、推定が不安定になりやすい：ユーザーに状況を報告し、トリミング等の選択肢を提示する（`docs/troubleshooting.md`にも例あり）。
-
--**バランス確認**（例：`WeightIt::summary()`、可能なら `cobalt` で `bal.tab()`/`love.plot()`）を必ず行い、結果（SMDなど）を添える。
-
-- 観察研究では「因果効果」と言い切らない。前提（交絡の取り切れなさ等）を明記する（`principles/compiled_principles.md`参照）。
-
-## 図の出力ルール（必須）
-
-> [!IMPORTANT]
+- `analysis-intake`
+- `sap-authoring`
+- `analysis-hitl-plan`
+- `environment-setup`
+- `data-wrangling`
+- `analysis-implementation`
+- `code-review-companion`
 
 ### Cross-cutting Controls
 
@@ -125,6 +60,9 @@
 ### Method Skill
 
 - `causal-iptw-weightit`
+- `quasi-experimental-its-did`
+- `regression-diagnostics`
+- `missing-data-mi`
 
 ### Utility
 
@@ -153,10 +91,13 @@
 #### Method Skill
 
 - `.agent/skills/causal-iptw-weightit/SKILL.md` - Owns IPTW-specific estimand, weighting, balance, and stability guidance using `WeightIt`.
+- `.agent/skills/quasi-experimental-its-did/SKILL.md` - Owns ITS/DID design choices, segmented-regression and parallel-trends diagnostics, and stability checks.
+- `.agent/skills/regression-diagnostics/SKILL.md` - Owns linear and logistic regression assumption checks, including outcome-model diagnostics after weighting or matching.
+- `.agent/skills/missing-data-mi/SKILL.md` - Owns the missing-data handling strategy decision and multiple imputation (MI) implementation and diagnostics.
 
 #### Utility
 
-- `.agent/skills/delegate-to-codex/SKILL.md` - Launches OpenAI Codex CLI with context from the current session to delegate coding tasks.
+- `.agent/skills/delegate-to-codex/SKILL.md` - Launches OpenAI Codex CLI with context from the current host-agent session to delegate coding tasks.
 
 ## スキル早引き表（初学者向け）
 
@@ -174,6 +115,10 @@
 | 「エラーが出た」「パッケージが読み込めない」 | `r-troubleshooting` |
 | 「因果関係を言いたい」「〜が〜を引き起こす、と書いていい？」 | `analysis-guardrails`（自動介入） |
 | 「IPTWを使いたい」「重み付けの診断をして」 | `causal-iptw-weightit` |
+| 「ITS をやりたい」「前後比較で効果を見たい」「DID を使いたい」 | `quasi-experimental-its-did` |
+| 「回帰の仮定を確認して」「VIF を見て」「モデル診断して」 | `regression-diagnostics` |
+| 「欠測が多い」「多重代入したい」「完全ケースでいい？」 | `missing-data-mi` |
+| 「Rmd で解析したい」「レポート形式で書きたい」 | `analysis-implementation`（Rmd モード） |
 | 「再現可能にしたい」「`renv` を使いたい」 | `reproducibility-standards` |
 | 「患者データを扱う」「個人情報が含まれている」 | `data-privacy-handling` |
 | 「テストを書きたい」「関数の動作を自動確認したい」 | `tdd-testthat` |
@@ -199,6 +144,8 @@ Rスクリプトを `projects/` 配下に出力する際、`code-review-companio
 
 1. **Stage A（静的）**: スクリプト出力と同時に逆翻訳レポート・トレーサビリティ表を `output/verification/` に生成
 2. **Stage B（実行後）**: `run_all.R` が `qa_inputs.json` を書き出し、`99_verify_data.R` が QA レポート・検証レポートを生成
+
+## 非交渉ルール（要約 — 詳細は `analysis-guardrails`）
 
 - 実行していない解析結果（数値・p値・図）を捏造しない
 - 観察研究で因果を断定しない（言い回しと前提を明記）

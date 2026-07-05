@@ -9,6 +9,7 @@ description: Converts an approved Gate-based analysis plan into a project skelet
 
 - Primary deliverable: `projects/<analysis_name>/` with executable script skeletons.
 - This skill owns the translation from approved plan to code structure.
+- This skill also owns the single-file Rmd education-mode structure (see "Lightweight Rmd mode").
 - It does not replace SAP approval, Gate approval, or statistical judgment.
 
 ## Inputs
@@ -61,11 +62,12 @@ projects/<analysis_name>/
 ## Reuse-first workflow
 
 - Reuse existing examples before starting from scratch.
-- Candidate sources:
-  - `scripts/updated_example.R`
-  - `scripts/simple_demo.R`
-  - `scripts/plos_analysis/`
-  - `scripts/zenodo_analysis/`
+- Candidate sources (real, in-repo):
+  - `projects/medical_education_admissions/` — multiple regression example.
+  - `projects/medical_education_panel/` — ITS/DID example.
+  - `projects/chatgpt_diagnostic_study/` — diagnostic-accuracy example.
+  - `scripts/zenodo_analysis/` — script-level example.
+  - `scripts/archive/` — older sample scripts; reference only as a last resort.
 - Copy the closest template into the project skeleton and adapt it to approved Gate IDs.
 
 ## Implementation rules
@@ -74,6 +76,13 @@ projects/<analysis_name>/
 - Put `@plan_id` tags in numbered scripts, not in `utils_*.R`.
 - Keep helper functions in `utils_*.R` and test them through `tdd-testthat`.
 - Keep outputs inside the project folder and follow `reproducibility-standards`.
+
+## Lightweight Rmd mode (education)
+
+- When to use: education handsons and small analyses may use a single-Rmd mode. Real research projects use the numbered-script structure above. The numbered structure is the default; use Rmd mode only when the user specifies an Rmd.
+- Structure: one `projects/<analysis_name>/analysis.Rmd` plus `output/` and `data/`. Order the Rmd section headings to match Gate order: Setup -> Import -> Clean -> Explore -> Descriptive -> Primary -> Sensitivity.
+- Traceability: put `@plan_id` tags as in-chunk comments (same format as the numbered-script rule). Reflect the Gate ID in the chunk label as well, for example ` ```{r g2b-1-primary-model} `.
+- Guardrails are unchanged: `analysis-guardrails` and `data-privacy-handling` apply fully in Rmd mode.
 
 ## Handoff
 

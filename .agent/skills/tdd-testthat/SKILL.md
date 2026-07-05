@@ -59,7 +59,7 @@ result   <- calc_bmi(df_clean$weight, df_clean$height)
 ### 実行手順（devtools 非依存）
 
 > [!IMPORTANT]
-> この環境には `devtools` がインストールされていない。`source()` + `testthat::test_file()` を使用する。
+> この環境には `devtools` がインストールされていない（renv.lock 更新時は要再確認）。`source()` + `testthat::test_file()` を使用する。
 
 ```r
 # 1. 関数を読み込む
@@ -352,7 +352,7 @@ test_that("CSV export content is stable", {
 ## カバレッジ（任意）
 
 > [!NOTE]
-> `covr` は現在 renv に直接インストールされていない。必要な場合はユーザーに確認の上インストールする。
+> `covr` は現在 renv に直接インストールされていない（renv.lock 更新時は要再確認）。必要な場合はユーザーに確認の上インストールする。
 
 ```r
 if (requireNamespace("covr", quietly = TRUE)) {

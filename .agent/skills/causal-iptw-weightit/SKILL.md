@@ -34,7 +34,7 @@ description: Owns IPTW-specific estimand, weighting, balance, and stability guid
 ## Implementation notes
 
 - Use `WeightIt` instead of `iptw`; see `docs/iptw_note.md`.
-- Use `WeightIt::summary()` and `cobalt::bal.tab()` or `cobalt::love.plot()` when available.
+- Use `summary(<weightit object>)` and `cobalt::bal.tab()` or `cobalt::love.plot()` when available.
 - Report instability risks explicitly and avoid overstating causal claims.
 
 ## Handoff

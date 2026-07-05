@@ -215,6 +215,59 @@ source("projects/medical_education_admissions/check_environment.R")
 - RStudio の Knit ボタン or `rmarkdown::render("analysis.Rmd")`
 - エラーが出たら AI にエラーメッセージごと貼って質問する
 
+## 期待される結果 (sanity check)
+
+`set.seed(20260513)` で生成したデータ (`data/processed/sample.csv`, n=200) を
+`Rscript projects/medical_education_admissions/data/raw/generate_sample_data.R` の
+モデルどおりに解析した場合の結果。
+
+### Task 1: Table 1 (admission_route 別 gpa)
+
+| admission_route | n | gpa mean (SD) |
+|---|---|---|
+| General | 151 | 15.45 (1.03) |
+| Special | 18 | 15.58 (1.05) |
+| SemiSpecial | 15 | 16.18 (1.08) |
+| Olympiad | 16 | 17.18 (0.75) |
+
+> 元論文と同じ傾向: **General が最も低く、Olympiad が最も高い**。
+
+### Task 2: 単変量解析
+
+**t検定 (gpa, General vs Other)**
+
+| 群 | n | gpa mean |
+|---|---|---|
+| General | 151 | 15.45 |
+| Other | 49 | 16.29 |
+
+差 (General − Other) = **−0.84**、95%CI [−1.21, −0.47]、**p < 0.001** (Welch の t検定)
+
+**$\chi^2$検定 + RR (admission_route_binary × cbse_repeat)**
+
+| | cbse_repeat = 0 | cbse_repeat = 1 | 再受験率 |
+|---|---|---|---|
+| General | 134 | 17 | 11.3% |
+| Other | 45 | 4 | 8.2% |
+
+RR (General vs Other) = **1.38**、95%CI [0.49, 3.90]、$\chi^2$ p = 0.73 (**有意差なし** — セル数が小さいため検出力不足。元論文の「再受験と入学経路の関連」を n=200 の仮想データで完全再現するのは難しい、という限界がある)
+
+### Task 3: 重回帰
+
+`lm(gpa ~ admission_route_binary + age + sex + entry_score)`
+
+| 項 | 推定値 | 95%CI | p値 | 解釈 |
+|---|---|---|---|---|
+| (Intercept) | 13.18 | [11.14, 15.22] | <0.001 | baseline (General, age=0 等の外挿値) |
+| `admission_route_binaryOther` | **+0.80** | [0.49, 1.10] | <0.001 | 年齢・性別・入学時スコアを調整しても、Other経路はGeneralよりgpaが高い |
+| `age` | −0.08 | [−0.15, −0.01] | 0.019 | 入学時年齢が高いほどgpaはわずかに低い |
+| `sexM` | +0.11 | [−0.16, 0.38] | 0.43 | 性差は統計的に有意でない |
+| `entry_score` | **+0.057** | [0.041, 0.074] | <0.001 | 入学時スコアはgpaの最も強い正の予測因子 |
+
+Multiple R² = 0.314 (Adjusted R² = 0.300)
+
+> 受講生にはこの「期待される結果」は当日まで見せない。AI の出力と一致するかを最後に答え合わせする。
+
 ## AI に聞く時のコツ（雛形）
 
 ```
@@ -228,6 +281,14 @@ source("projects/medical_education_admissions/check_environment.R")
 ```
 今の sample データで、admission_route が "General" かそれ以外かで gpa に
 差があるかを t検定で調べたいです。R のコードを書いてください。
+```
+
+```
+admission_route を "General" とそれ以外 (admission_route_binary) に分けて、
+cbse_repeat との関連を chisq.test() で検定したいです。あわせて、General 群を
+基準にしたリスク比 (RR) と 95%CI を base R だけで計算する関数を書いてください
+(epitools 等の追加パッケージは使わないでください)。
+R 初心者なので各行にコメントを付けてください。
 ```
 
 ```

@@ -64,10 +64,27 @@ glimpse(cases)
 # 目標: 74/150 = 49.3%
 ```
 
+**AIへの頼み方（例）:**
+```
+このリポジトリの projects/chatgpt_diagnostic_study/data/processed/chatgpt_cases_cleaned.csv を
+読み込んで、answer_correct_bool 列から正答率 (Accuracy) を計算する R コードを書いてください。
+目標値は 74/150 = 49.3% です。R 初心者なので各行にコメントを付けてください。
+```
+
 ### Step 3: 診断精度指標を計算
 ```r
 # ヒント: diagnostic_accuracy_600.csv を使う
 # TP, FP, TN, FN を数えて、Accuracy, Precision, Sensitivity, Specificity を計算
+```
+
+**AIへの頼み方（例）:**
+```
+projects/chatgpt_diagnostic_study/data/processed/diagnostic_accuracy_600.csv を読み込んで、
+diagnostic_result列 (True Positive/False Positive/True Negative/False Negative) の件数から
+TP, FP, TN, FN を数え、Accuracy, Precision, Sensitivity, Specificity を計算する R コードを
+書いてください。pROC パッケージを使って AUC も計算してください。
+目標値は Accuracy 74%、Sensitivity 48.67%、Specificity 82.89%、AUC 0.66 です。
+R 初心者なので各行にコメントを付けてください。
 ```
 
 ### Step 4: 図を作成
@@ -76,6 +93,19 @@ glimpse(cases)
 - Figure 3: ROC曲線
 - Figure 4: 認知負荷の分布
 - Figure 5: 医学情報品質の分布
+
+**AIへの頼み方（例）:**
+```
+chatgpt_cases_cleaned.csv と diagnostic_accuracy_600.csv を使って、次の5つの図を
+ggplot2 で作成する R コードを書いてください。
+1. 正答/誤答の棒グラフ
+2. 混同行列のヒートマップ (geom_tile を使う)
+3. ROC曲線 (pROCパッケージを使う)
+4. cognitive_load_std (認知負荷) の分布
+5. quality_answer_std (医学情報の品質) の分布
+図はそれぞれ output/figures/ 以下に ggsave() で保存してください。
+R 初心者なので各行にコメントを付けてください。
+```
 
 ### Step 5: 結果を論文と比較
 自分の結果が論文の値と一致しているか確認する

@@ -40,6 +40,12 @@ description: Collects study goals, design, variables, missingness, reporting nee
 - Ask whether custom helper functions are expected; if yes, flag `tdd-testthat`.
 - Ask for privacy or governance constraints; if yes, flag `data-privacy-handling`.
 - Ask whether a causal estimand and propensity-score workflow are intended; if yes, flag `causal-iptw-weightit`.
+- Ask whether a quasi-experimental design (ITS/DID) is intended; if yes, flag `quasi-experimental-its-did`.
+- Ask whether missingness is expected to be non-negligible; if yes, flag `missing-data-mi`.
+
+## When the user is undecided
+
+- If the user is unsure how to proceed, first produce descriptive statistics, a missingness summary, and simple visualizations, then move on to modeling.
 
 ## Handoff
 
